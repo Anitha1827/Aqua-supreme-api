@@ -47,6 +47,84 @@ router.get("/get", async (req, res) => {
   }
 });
 
+// Get Details by ID
+router.get("/get-by-id/:id", async (req, res) => {
+  try {
+    let id = req.params.id;
+    let data = await Customer.findById({ _id: id });
+    res.status(200).json({
+      message: "Fetched Customer Details from ID",
+      data,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Assign technician to data
+router.put("/assign-technician/:id", async (req, res) => {
+  try {
+    let id = req.params.id;
+    await Customer.findByIdAndUpdate(
+      { _id: id },
+      {
+        $set: {
+          isInstallationAssignTo: req.body.isInstallationAssignTo,
+        },
+      }
+    );
+    res.status(200).json({ message: "Technician assigned Successfully!" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Installation status
+router.put("/installation-status/:id", async (req, res) => {
+  try {
+    let installationRemarks = req.body.installationRemarks;
+    let isInstallationPending = req.body.isInstallationPending;
+    let isInstallationCompleted = req.body.isInstallationCompleted;
+    let id = req.params.id;
+
+    await Customer.findByIdAndUpdate(
+      { _id: id },
+      {
+        $set: {
+          installationRemarks,
+          isInstallationPending,
+          isInstallationCompleted,
+        },
+      }
+    );
+    res
+      .status(200)
+      .json({ message: "Installation Status Updated Successfully!" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Installation completion status update
+router.put("/installation-completion/:id", async (req, res) => {
+  try {
+    let id = req.params.id;
+    await Customer.findByIdAndUpdate(
+      { _id: id },
+      { $set: { isInstallationCompleted: true } }
+    );
+    res
+      .status(200)
+      .json({ message: "Installation completion updated successfully!" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Update Customer details
 router.put("/update", async (req, res) => {
   try {
