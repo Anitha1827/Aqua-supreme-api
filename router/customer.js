@@ -108,6 +108,36 @@ router.put("/installation-status/:id", async (req, res) => {
   }
 });
 
+// Get Installation completion data
+router.get("/installation-completed-data", async (req, res) => {
+  try {
+    let getdata = await Customer.find({ isInstallationPending: true });
+    res.status(200).json({
+      message: "Installation completion data fetched Successfully!",
+      getdata,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get Installation Pending data
+router.get("/installation-pending-data", async (req, res) => {
+  try {
+    let getpendingdata = await Customer.find({ isInstallationCompleted: true });
+    res
+      .status(200)
+      .json({
+        message: "Installation Pending data updated Successfully!",
+        getpendingdata,
+      });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Installation completion status update
 router.put("/installation-completion/:id", async (req, res) => {
   try {

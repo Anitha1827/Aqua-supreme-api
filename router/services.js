@@ -100,7 +100,6 @@ router.put("/service-status/:id", async (req, res) => {
 });
 
 // Service completion status update
-
 router.put("/service-completion/:id", async (req, res) => {
   try {
     let id = req.params.id;
