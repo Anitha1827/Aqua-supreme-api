@@ -6,31 +6,31 @@ import { Admin } from "../Model/admin.js";
 let router = express.Router();
 
 // Admin Signup
-// router.post("/signup", async (req, res) => {
-//   try {
-//     // Find Admin already registered
-//     let user = await Admin.findOne({ phone: req.body.phone });
-//     if (user) {
-//       return res.status(400).json({ message: "Phone already registered" });
-//     }
+router.post("/signup", async (req, res) => {
+  try {
+    // Find Admin already registered
+    let user = await Admin.findOne({ phone: req.body.phone });
+    if (user) {
+      return res.status(400).json({ message: "Phone already registered" });
+    }
 
-//     // generate hash password
-//     let salt = await bcrypt.genSalt(9);
-//     let hashedpassword = await bcrypt.hash(req.body.password, salt);
-//     // Add new Admin
-//     let newUser = await new Admin({
-//       phone: req.body.phone,
-//       password: hashedpassword,
-//     }).save();
+    // generate hash password
+    let salt = await bcrypt.genSalt(9);
+    let hashedpassword = await bcrypt.hash(req.body.password, salt);
+    // Add new Admin
+    let newUser = await new Admin({
+      phone: req.body.phone,
+      password: hashedpassword,
+    }).save();
 
-//     // generate jwt token
-//     let token = generateJwtToken(newUser._id);
-//     res.status(200).json({ message: "Signup successfully!", token });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({ error: error.message });
-//   }
-// });
+    // generate jwt token
+    let token = generateJwtToken(newUser._id);
+    res.status(200).json({ message: "Signup successfully!", token });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
+});
 // Admin Login 
 router.post("/login", async (req, res) => {
   try {

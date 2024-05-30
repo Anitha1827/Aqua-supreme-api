@@ -1,6 +1,7 @@
 import express from "express";
 import { Customer } from "../Model/customer.js";
 import { getCurrentDate } from "../service.js";
+import { Services } from "../Model/services.js";
 
 let router = express.Router();
 
@@ -51,7 +52,9 @@ router.get("/get", async (req, res) => {
 router.get("/get-by-id/:id", async (req, res) => {
   try {
     let id = req.params.id;
-    let data = await Customer.findById({ _id: id });
+    let data = await Customer.findById({ _id: id});
+    let service = await Services.find({customerPhone:data.customerPhone});
+    data["service"] = service;
     res.status(200).json({
       message: "Fetched Customer Details from ID",
       data,
