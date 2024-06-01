@@ -59,6 +59,36 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// Reset password
+router.put("/reset-password", async(req, res) => {
+  try {
+   let newpassword = req.body.newPassword;
+   let oldpassword = req.body.oldPassword;
 
+    let resp = await Admin.find();
+    let admin = resp[0];
+    let valiedatePassword = await bcrypt.compare(
+      oldpassword,
+      admin.password
+    );
+    
+    console.log("valied", valiedatePassword);
+    if(!valiedatePassword){
+      return res.status(200).json({message:"Invalid Password"})
+    }
+
+    // generate hash password
+    let salt = await bcrypt.genSalt(9);
+    let hashedpassword = await bcrypt.hash(newpassword, salt);
+    
+    await Admin.findOneAndUpdate({phone:admin.phone},{$set:{
+      password:hashedpassword
+    }});
+    res.status(200).json({message:"Password Reset Successfully!"})
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({error:error.message})
+  }
+})
 
 export let authrouter = router;

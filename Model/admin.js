@@ -8,7 +8,7 @@ let adminSchema = new mongoose.Schema({
   password: {
     type: "string",
     required: true,
-  },
+  }
 });
 
 let Admin = mongoose.model("Admin", adminSchema);

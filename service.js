@@ -22,4 +22,11 @@ function getCurrentDate() {
   return date;
 }
 
-export { generateJwtToken, getCurrentDate };
+// Add 90days to current data
+function getdueDate(){
+  let currentDate = new Date();
+  let month = currentDate.getMonth()+1;
+  // console.log("month", month+getDate())
+} 
+
+export { generateJwtToken, getCurrentDate,getdueDate };
