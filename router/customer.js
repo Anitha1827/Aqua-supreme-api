@@ -1,6 +1,6 @@
 import express from "express";
 import { Customer } from "../Model/customer.js";
-import { getCurrentDate } from "../service.js";
+import { getCurrentDate, getdueDate } from "../service.js";
 import { Services } from "../Model/services.js";
 
 let router = express.Router();
@@ -31,7 +31,7 @@ router.post("/create", async (req, res) => {
   }
 });
 
-// Get All customer details
+// Get All customer details for installation 
 router.get("/get", async (req, res) => {
   try {
     let getAllCustomerDetails = await Customer.find({
@@ -39,7 +39,7 @@ router.get("/get", async (req, res) => {
       isInstallationCompleted: false,
     });
     res.status(200).json({
-      message: "Fetched all Customer details Succesfully!",
+      message: "Fetched Customer details Succesfully!",
       getAllCustomerDetails,
     });
   } catch (error) {
@@ -47,6 +47,17 @@ router.get("/get", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+// Get all customer
+router.get("/getAll", async(req, res) => {
+  try {
+    let getAllCustomerDetails = await Customer.find();
+    res.status(200).json({message:"Fetched all Customer details Succuessfully!",getAllCustomerDetails})
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({erro:error.message})
+  }
+})
 
 // Get Details by ID
 router.get("/get-by-id/:id", async (req, res) => {
@@ -87,11 +98,12 @@ router.put("/assign-technician/:id", async (req, res) => {
 // Installation status
 router.put("/installation-status/:id", async (req, res) => {
   try {
-    let installationRemarks = req.body.installationRemarks;
-    let isInstallationPending = req.body.isInstallationPending;
-    let isInstallationCompleted = req.body.isInstallationCompleted;
+    let { installationRemarks,isInstallationPending,isInstallationCompleted} = req.body
     let id = req.params.id;
 
+    console.log("status",installationRemarks,isInstallationPending,isInstallationCompleted,id)
+    let installation = await Customer.findById({_id:id});
+    let duedate = isInstallationCompleted ? getdueDate() : installation.duedate
     await Customer.findByIdAndUpdate(
       { _id: id },
       {
@@ -99,9 +111,11 @@ router.put("/installation-status/:id", async (req, res) => {
           installationRemarks,
           isInstallationPending,
           isInstallationCompleted,
+          duedate,
         },
       }
     );
+
     res
       .status(200)
       .json({ message: "Installation Status Updated Successfully!" });
@@ -114,7 +128,7 @@ router.put("/installation-status/:id", async (req, res) => {
 // Get Installation completion data
 router.get("/installation-completed-data", async (req, res) => {
   try {
-    let getdata = await Customer.find({ isInstallationPending: true });
+    let getdata = await Customer.find({ isInstallationCompleted: true });
     res.status(200).json({
       message: "Installation completion data fetched Successfully!",
       getdata,
@@ -128,7 +142,7 @@ router.get("/installation-completed-data", async (req, res) => {
 // Get Installation Pending data
 router.get("/installation-pending-data", async (req, res) => {
   try {
-    let getpendingdata = await Customer.find({ isInstallationCompleted: true });
+    let getpendingdata = await Customer.find({ isInstallationPending: true });
     res
       .status(200)
       .json({
@@ -145,9 +159,11 @@ router.get("/installation-pending-data", async (req, res) => {
 router.put("/installation-completion/:id", async (req, res) => {
   try {
     let id = req.params.id;
+    let duedate = getdueDate();
+
     await Customer.findByIdAndUpdate(
       { _id: id },
-      { $set: { isInstallationCompleted: true } }
+      { $set: { isInstallationCompleted: true, duedate} }
     );
     res
       .status(200)

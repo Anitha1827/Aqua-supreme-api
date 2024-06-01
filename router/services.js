@@ -1,6 +1,7 @@
 import express from "express";
 import { Services } from "../Model/services.js";
-import { getCurrentDate } from "../service.js";
+import { getCurrentDate, getdueDate } from "../service.js";
+import { Customer } from "../Model/customer.js";
 
 let router = express.Router();
 
@@ -82,6 +83,10 @@ router.put("/service-status/:id", async (req, res) => {
     let remarks = req.body.remarks;
     let isPending = req.body.isPending;
     let isCompleted = req.body.isCompleted;
+
+    let service = await Services.find({ _id: id });
+    let duedate = isCompleted ? getdueDate() : service.serviceDate;
+
     await Services.findByIdAndUpdate(
       { _id: id },
       {
@@ -92,6 +97,9 @@ router.put("/service-status/:id", async (req, res) => {
         },
       }
     );
+    await Customer.findOneAndUpdate({customerPhone:service.customerPhone},{$set:{
+      duedate
+    }});
     res.status(200).json({ message: "Service status updated successfully!" });
   } catch (error) {
     console.error(error);
@@ -103,6 +111,7 @@ router.put("/service-status/:id", async (req, res) => {
 router.put("/service-completion/:id", async (req, res) => {
   try {
     let id = req.params.id;
+    let duedate = getdueDate();
     await Services.findByIdAndUpdate(
       { _id: id },
       {
@@ -111,6 +120,10 @@ router.put("/service-completion/:id", async (req, res) => {
         },
       }
     );
+    let customer = Services.findById({_id:id})
+    await Customer.findOneAndUpdate({customerPhone:customer.customerPhone},{$set:{
+      duedate
+    }})
     res
       .status(200)
       .json({ message: "Service Completion status update successfully!" });

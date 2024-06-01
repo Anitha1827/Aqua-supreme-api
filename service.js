@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { Notification } from "./Model/notification.js";
 
 // JWT token generating
 let generateJwtToken = (id) => {
@@ -22,11 +23,22 @@ function getCurrentDate() {
   return date;
 }
 
-// Add 90days to current data
+// Add 3months to current date
 function getdueDate(){
-  let currentDate = new Date();
-  let month = currentDate.getMonth()+1;
-  // console.log("month", month+getDate())
+    let result = new Date();
+    result.setMonth(result.getMonth() + 3);
+    return result.toLocaleDateString();
 } 
 
-export { generateJwtToken, getCurrentDate,getdueDate };
+// Notofication function
+async function addnotification (data){
+  try {
+    await new Notification(data).save();
+    return true
+  } catch (error) {
+    console.log(error);
+    return false
+  }
+}
+
+export { generateJwtToken, getCurrentDate,getdueDate,addnotification };
