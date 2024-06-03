@@ -29,12 +29,22 @@ let customerSchema = new mongoose.Schema({
         type:"boolean",
         default:false,
     },
-    isInstallationCompleted:{
+    isInstallationCompleted:{  // if true: installedby us, else:installed by outside
         type:"boolean",
         default:false,
     },
     duedate:{
         type:"string",
+    },
+    serviceCount:{
+        type:"string"
+    },
+    product:{
+        type:"string",
+    },
+    isinstalled:{   //chech is installed or not
+        type:"boolean",
+        default:false,
     },
 });
 

@@ -5,7 +5,7 @@ import { Services } from "../Model/services.js";
 
 let router = express.Router();
 
-// Create Cutomer details
+// Create Installation Cutomer details
 router.post("/create", async (req, res) => {
   try {
     let duedate = getCurrentDate();
@@ -15,12 +15,35 @@ router.post("/create", async (req, res) => {
       customerName: req.body.name,
       customerPhone: req.body.phone,
       address: req.body.address,
-      isInstallationAssignTo: req.body.isInstallationAssignTo,
       lastServicedAt: req.body.date,
       duedate: duedate,
-      custDetails: req.body.custDetails,
-      isInstalled: false,
-      installationRemarks: req.body.installationRemarks,
+      custDetails: req.body.custDetails, // without info
+      isInstallationCompleted: false,
+      isServicePending: false,
+    }).save();
+
+    res.status(200).json({ message: "Customer Added Successfully!" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Create new customer details
+router.post("/createnew-customer", async (req, res) => {
+  try {
+    let duedate = getCurrentDate();
+
+    // Adding new Customer details to DB
+    await new Customer({
+      customerName: req.body.name,
+      customerPhone: req.body.phone,
+      address: req.body.address,
+      lastServicedAt: req.body.date,
+      duedate: duedate,
+      custDetails: req.body.custDetails, // without info
+      isInstallationCompleted: false,
+      isinstalled:true,
       isServicePending: false,
     }).save();
 
@@ -111,6 +134,7 @@ router.put("/installation-status/:id", async (req, res) => {
           installationRemarks,
           isInstallationPending,
           isInstallationCompleted,
+          isinstalled:isInstallationCompleted,
           duedate,
         },
       }
@@ -163,7 +187,7 @@ router.put("/installation-completion/:id", async (req, res) => {
 
     await Customer.findByIdAndUpdate(
       { _id: id },
-      { $set: { isInstallationCompleted: true, duedate} }
+      { $set: { isInstallationCompleted: true, duedate, isinstalled:true} }
     );
     res
       .status(200)
@@ -179,13 +203,13 @@ router.put("/update", async (req, res) => {
   try {
     let customerName = req.body.name;
     let customerPhone = req.body.phone;
-    let lastServicedAt = req.body.date;
+    let address = req.body.address;
     let id = req.body.id;
-    let duedate = getCurrentDate();
+   
 
     await Customer.findOneAndUpdate(
       { _id: id },
-      { $set: { customerName, customerPhone, lastServicedAt, duedate } }
+      { $set: { customerName, customerPhone, address } }
     );
     res.status(200).json({ message: "Customer Updated Succesfully!" });
   } catch (error) {
