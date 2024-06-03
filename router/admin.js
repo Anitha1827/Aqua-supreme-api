@@ -37,7 +37,7 @@ router.post("/login", async (req, res) => {
     let user = await Admin.findOne({ phone: req.body.phone });
 
     if (!user) {
-      return res.status(400).json({ message: "Invalied Credentials" });
+      return res.status(400).json({ message: "Invalid Credentials" });
     }
 
     // valiedate password
