@@ -8,18 +8,19 @@ let router = express.Router();
 // Create Installation Cutomer details
 router.post("/create", async (req, res) => {
   try {
-    let duedate = getCurrentDate();
+    let createdAt = getCurrentDate();
 
     // Adding new Customer details to DB
     await new Customer({
       customerName: req.body.name,
       customerPhone: req.body.phone,
       address: req.body.address,
-      lastServicedAt: req.body.date,
-      duedate: duedate,
+      createdAt: createdAt,
+      duedate:req.body.duedate,
       custDetails: req.body.custDetails, // without info
       isInstallationCompleted: false,
       isServicePending: false,
+      product:req.body.product,
     }).save();
 
     res.status(200).json({ message: "Customer Added Successfully!" });
@@ -32,19 +33,20 @@ router.post("/create", async (req, res) => {
 // Create new customer details
 router.post("/createnew-customer", async (req, res) => {
   try {
-    let duedate = getCurrentDate();
+    let createdAt = getCurrentDate();
 
     // Adding new Customer details to DB
     await new Customer({
       customerName: req.body.name,
       customerPhone: req.body.phone,
       address: req.body.address,
-      lastServicedAt: req.body.date,
-      duedate: duedate,
+      createdAt:createdAt,
+      duedate: req.body.duedate,
       custDetails: req.body.custDetails, // without info
       isInstallationCompleted: false,
       isinstalled:true,
       isServicePending: false,
+      product:req.body.product
     }).save();
 
     res.status(200).json({ message: "Customer Added Successfully!" });
@@ -178,6 +180,37 @@ router.get("/installation-pending-data", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+//update duedate 
+router.put("/edit-duedate", async (req, res) => {
+  try {
+    let date = req.body.date;
+    let id = req.body.id;
+    await Customer.findOneAndUpdate(
+      { _id: id },
+      {
+        $set: {
+          duedate:date,
+        },
+      }
+    );
+    res.status(200).json({ message: "Service Updated Successfully!" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+//next service reminder
+router.get("/service-reminder", async (req, res) => {
+  try {
+   let data =  await Customer.find({isinstalled:true, isServicePending:false});
+    res.status(200).json({ message: "Service reminder data fetched Successfully!",data });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+}); 
 
 // Installation completion status update
 router.put("/installation-completion/:id", async (req, res) => {

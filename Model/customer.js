@@ -37,7 +37,8 @@ let customerSchema = new mongoose.Schema({
         type:"string",
     },
     serviceCount:{
-        type:"string"
+        type:"string",
+        default:0,
     },
     product:{
         type:"string",
@@ -46,6 +47,9 @@ let customerSchema = new mongoose.Schema({
         type:"boolean",
         default:false,
     },
+    createdAt:{
+        type:"string",
+    }
 });
 
 let Customer = mongoose.model("Customer", customerSchema);

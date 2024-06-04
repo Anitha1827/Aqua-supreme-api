@@ -10,15 +10,20 @@ router.post("/create", async (req, res) => {
   try {
     let createdAt = getCurrentDate();
     await new Services({
-      customerName: req.body.name,
+      customerId: req.body.customerId,
       customerPhone: req.body.phone,
       serviceType: req.body.serviceType,
-      address: req.body.address,
-      remarks: req.body.remarks,
       createdAt: createdAt,
-      serviceAssignTo: req.body.serviceAssignTo,
-      serviceDate: req.body.serviceDate,
     }).save();
+    await Customer.findByIdAndUpdate(
+      { _id: req.body.customerId },
+      {
+        $set: {
+          isServicePending: true,
+          duedate:req.body.duedate,
+        },
+      }
+    );
 
     res.status(200).json({ message: "Service Created Successfully!" });
   } catch (error) {
@@ -27,7 +32,7 @@ router.post("/create", async (req, res) => {
   }
 });
 
-// get service details
+// get service details // in service page it will show
 router.get("/get", async (req, res) => {
   try {
     let getAllServiceDetails = await Services.find({
@@ -85,7 +90,8 @@ router.put("/service-status/:id", async (req, res) => {
     let isCompleted = req.body.isCompleted;
 
     let service = await Services.find({ _id: id });
-    let duedate = isCompleted ? getdueDate() : service.serviceDate;
+    let customer = await Customer.findById({ _id: service.customerId });
+    let duedate = isCompleted ? getdueDate() : customer.duedate;
 
     await Services.findByIdAndUpdate(
       { _id: id },
@@ -97,9 +103,15 @@ router.put("/service-status/:id", async (req, res) => {
         },
       }
     );
-    await Customer.findOneAndUpdate({customerPhone:service.customerPhone},{$set:{
-      duedate
-    }});
+    await Customer.findOneAndUpdate(
+      { _id: service.customerId },
+      {
+        $set: {
+          duedate,
+          isServicePending: isPending,
+        },
+      }
+    );
     res.status(200).json({ message: "Service status updated successfully!" });
   } catch (error) {
     console.error(error);
@@ -117,13 +129,20 @@ router.put("/service-completion/:id", async (req, res) => {
       {
         $set: {
           isCompleted: true,
+          isPending: false,
         },
       }
     );
-    let customer = Services.findById({_id:id})
-    await Customer.findOneAndUpdate({customerPhone:customer.customerPhone},{$set:{
-      duedate
-    }})
+    let customer = Services.findById({ _id: id });
+    await Customer.findOneAndUpdate(
+      { _id: customer.customerId },
+      {
+        $set: {
+          duedate,
+          isServicePending: false,
+        },
+      }
+    );
     res
       .status(200)
       .json({ message: "Service Completion status update successfully!" });
@@ -165,20 +184,16 @@ router.get("/get-pending", async (req, res) => {
   }
 });
 
-// Update Services
-router.put("/edit", async (req, res) => {
+// Update  Services Phone number
+router.put("/edit-phone", async (req, res) => {
   try {
-    let customerName = req.body.name;
     let customerPhone = req.body.phone;
-    let serviceDate = req.body.date;
     let id = req.body.id;
     await Services.findOneAndUpdate(
       { _id: id },
       {
         $set: {
-          customerName,
           customerPhone,
-          serviceDate,
         },
       }
     );
@@ -188,6 +203,7 @@ router.put("/edit", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 // Delete Services
 router.delete("/delete/:id", async (req, res) => {
   try {
