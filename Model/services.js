@@ -33,6 +33,9 @@ let serviceSchema = new mongoose.Schema({
     serviceDate:{
         type:"string",
     },
+    updatedAt:{
+        type:"string",
+    },
     serviceType:{
         type:"string"
     }

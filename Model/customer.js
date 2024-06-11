@@ -38,7 +38,7 @@ let customerSchema = new mongoose.Schema({
         type:"string",
     },
     serviceCount:{
-        type:"string",
+        type:"number",
         default:0,
     },
     product:{

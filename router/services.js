@@ -8,13 +8,13 @@ let router = express.Router();
 // Create service details
 router.post("/create", async (req, res) => {
   try {
-    console.log(req.body);
     let createdAt = getCurrentDate();
     await new Services({
       customerId: req.body.customerId,
       customerPhone: req.body.phone,
       serviceType: req.body.serviceType,
       createdAt: createdAt,
+      serviceDate: req.body.duedate,
     }).save();
     await Customer.findByIdAndUpdate(
       { _id: req.body.customerId },
@@ -89,10 +89,12 @@ router.put("/service-status/:id", async (req, res) => {
     let remarks = req.body.remarks;
     let isPending = req.body.isPending;
     let isCompleted = req.body.isCompleted;
-    let service = await Services.find({ _id: id });
+    let service = await Services.findById({ _id: id });
     let customer = await Customer.findById({ _id: service.customerId });
     let duedate = isCompleted ? getdueDate() : customer.duedate;
     let lastServicedAt = isCompleted ? getCurrentDate() : customer.lastServicedAt ? customer.lastServicedAt: "";
+    let serviceCount = isCompleted ? customer.serviceCount + 1 : customer.serviceCount 
+    let updatedAt = getCurrentDate();
 
     await Services.findByIdAndUpdate(
       { _id: id },
@@ -101,6 +103,7 @@ router.put("/service-status/:id", async (req, res) => {
           remarks,
           isPending,
           isCompleted,
+          updatedAt,
         },
       }
     );
@@ -111,6 +114,7 @@ router.put("/service-status/:id", async (req, res) => {
           duedate,
           isServicePending: isPending,
           lastServicedAt,
+          serviceCount,
         },
       }
     );
@@ -133,10 +137,12 @@ router.put("/service-completion/:id", async (req, res) => {
         $set: {
           isCompleted: true,
           isPending: false,
+          updatedAt:lastServicedAt,
         },
       }
     );
     let customer = Services.findById({ _id: id });
+    let customerDetails = Customer.findById({_id:customer.customerId});
     await Customer.findOneAndUpdate(
       { _id: customer.customerId },
       {
@@ -144,6 +150,7 @@ router.put("/service-completion/:id", async (req, res) => {
           duedate,
           isServicePending: false,
           lastServicedAt,
+          serviceCount:customerDetails.serviceCount + 1,
         },
       }
     );

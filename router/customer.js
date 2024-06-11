@@ -62,6 +62,7 @@ router.get("/get", async (req, res) => {
     let getAllCustomerDetails = await Customer.find({
       isInstallationPending: false,
       isInstallationCompleted: false,
+      isinstalled:false,
     });
     res.status(200).json({
       message: "Fetched Customer details Succesfully!",
@@ -252,6 +253,22 @@ router.put("/update", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+// update duedate to customer
+router.put("/update-duedate", async(req, res)=>{
+  try {
+    let duedate = req.body.duedate;
+    let id = req.body.id;
+    await Customer.findOneAndUpdate(
+      { _id: id },
+      { $set: {duedate } }
+    );
+    res.status(200).json({ message: "Due date Updated Succesfully!" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({error:error.message})
+  }
+})
 
 // Delete Customer details
 router.delete("/cust-delete/:id", async (req, res) => {
