@@ -8,6 +8,7 @@ let router = express.Router();
 // Create service details
 router.post("/create", async (req, res) => {
   try {
+    console.log(req.body);
     let createdAt = getCurrentDate();
     await new Services({
       customerId: req.body.customerId,
@@ -88,10 +89,10 @@ router.put("/service-status/:id", async (req, res) => {
     let remarks = req.body.remarks;
     let isPending = req.body.isPending;
     let isCompleted = req.body.isCompleted;
-
     let service = await Services.find({ _id: id });
     let customer = await Customer.findById({ _id: service.customerId });
     let duedate = isCompleted ? getdueDate() : customer.duedate;
+    let lastServicedAt = isCompleted ? getCurrentDate() : customer.lastServicedAt ? customer.lastServicedAt: "";
 
     await Services.findByIdAndUpdate(
       { _id: id },
@@ -109,6 +110,7 @@ router.put("/service-status/:id", async (req, res) => {
         $set: {
           duedate,
           isServicePending: isPending,
+          lastServicedAt,
         },
       }
     );
@@ -124,6 +126,7 @@ router.put("/service-completion/:id", async (req, res) => {
   try {
     let id = req.params.id;
     let duedate = getdueDate();
+    let lastServicedAt =  getCurrentDate();
     await Services.findByIdAndUpdate(
       { _id: id },
       {
@@ -140,6 +143,7 @@ router.put("/service-completion/:id", async (req, res) => {
         $set: {
           duedate,
           isServicePending: false,
+          lastServicedAt,
         },
       }
     );

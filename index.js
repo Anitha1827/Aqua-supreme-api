@@ -7,6 +7,7 @@ import { customerrouter } from "./router/customer.js";
 import { services } from "./router/services.js";
 import { userRouter } from "./router/user.js";
 import { getdueDate } from "./service.js";
+import { productrouter } from "./router/product.js";
 
 // Config dotenv
 dotenv.config();
@@ -32,6 +33,7 @@ app.use("/api/auth",authrouter);
 app.use("/api/service", services);
 app.use("/api/customer",customerrouter);
 app.use("/api/user", userRouter);
+app.use("/api/product",productrouter);
 
 // initilizing port
 let PORT = process.env.PORT

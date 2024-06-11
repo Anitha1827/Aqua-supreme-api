@@ -8,7 +8,8 @@ let customerSchema = new mongoose.Schema({
         type:"string",
     },
     address:{
-        type:"string"
+        type:"object",
+        default:{},
     },
     isInstallationAssignTo:{
         type:"string",

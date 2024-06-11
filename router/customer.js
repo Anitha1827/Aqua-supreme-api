@@ -16,7 +16,7 @@ router.post("/create", async (req, res) => {
       customerPhone: req.body.phone,
       address: req.body.address,
       createdAt: createdAt,
-      duedate:req.body.duedate,
+      duedate:req.body.date,
       custDetails: req.body.custDetails, // without info
       isInstallationCompleted: false,
       isServicePending: false,
@@ -129,6 +129,7 @@ router.put("/installation-status/:id", async (req, res) => {
     console.log("status",installationRemarks,isInstallationPending,isInstallationCompleted,id)
     let installation = await Customer.findById({_id:id});
     let duedate = isInstallationCompleted ? getdueDate() : installation.duedate
+    let lastServicedAt = isInstallationCompleted ? getCurrentDate() : "";
     await Customer.findByIdAndUpdate(
       { _id: id },
       {
@@ -138,6 +139,7 @@ router.put("/installation-status/:id", async (req, res) => {
           isInstallationCompleted,
           isinstalled:isInstallationCompleted,
           duedate,
+          lastServicedAt,
         },
       }
     );
@@ -194,7 +196,7 @@ router.put("/edit-duedate", async (req, res) => {
         },
       }
     );
-    res.status(200).json({ message: "Service Updated Successfully!" });
+    res.status(200).json({ message: "Service due date Updated Successfully!" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: error.message });
@@ -217,10 +219,10 @@ router.put("/installation-completion/:id", async (req, res) => {
   try {
     let id = req.params.id;
     let duedate = getdueDate();
-
+    let lastServicedAt = getCurrentDate();
     await Customer.findByIdAndUpdate(
       { _id: id },
-      { $set: { isInstallationCompleted: true, duedate, isinstalled:true} }
+      { $set: { isInstallationCompleted: true, duedate, isinstalled:true,lastServicedAt} }
     );
     res
       .status(200)
@@ -238,11 +240,11 @@ router.put("/update", async (req, res) => {
     let customerPhone = req.body.phone;
     let address = req.body.address;
     let id = req.body.id;
-   
+    let duedate = req.body.duedate
 
     await Customer.findOneAndUpdate(
       { _id: id },
-      { $set: { customerName, customerPhone, address } }
+      { $set: { customerName, customerPhone, address,duedate } }
     );
     res.status(200).json({ message: "Customer Updated Succesfully!" });
   } catch (error) {
