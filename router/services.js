@@ -12,6 +12,7 @@ router.post("/create", async (req, res) => {
     await new Services({
       customerId: req.body.customerId,
       customerPhone: req.body.phone,
+      customerName:req.body.customerName,
       serviceType: req.body.serviceType,
       createdAt: createdAt,
       serviceDate: req.body.duedate,
@@ -219,6 +220,10 @@ router.put("/edit-phone", async (req, res) => {
 router.delete("/delete/:id", async (req, res) => {
   try {
     let id = req.params.id;
+    let service = Services.findById({_id:id});
+    await Customer.findByIdAndUpdate({_id:id},{$set:{
+      isServicePending:false
+    }})
     await Services.findByIdAndDelete({ _id: id });
     res.status(200).json({ message: "Service Deleted Succesfully!" });
   } catch (error) {
