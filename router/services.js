@@ -221,7 +221,7 @@ router.delete("/delete/:id", async (req, res) => {
   try {
     let id = req.params.id;
     let service = Services.findById({_id:id});
-    await Customer.findByIdAndUpdate({_id:id},{$set:{
+    await Customer.findByIdAndUpdate({_id:service.customerId},{$set:{
       isServicePending:false
     }})
     await Services.findByIdAndDelete({ _id: id });
