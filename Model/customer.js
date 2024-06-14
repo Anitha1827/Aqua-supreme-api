@@ -6,6 +6,7 @@ let customerSchema = new mongoose.Schema({
     },
     customerPhone:{
         type:"string",
+        unique:true,
     },
     address:{
         type:"object",
