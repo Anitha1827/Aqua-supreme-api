@@ -10,6 +10,7 @@ import { getdueDate } from "./service.js";
 import { productrouter } from "./router/product.js";
 import { leadrouter } from "./router/lead.js";
 import { Sparesrouter } from "./router/spares.js";
+import { Arearouter } from "./router/area.js";
 
 // Config dotenv
 dotenv.config();
@@ -38,6 +39,7 @@ app.use("/api/user", userRouter);
 app.use("/api/product",productrouter);
 app.use("/api/lead", leadrouter);
 app.use("/api/spares",Sparesrouter);
+app.use("/api/area", Arearouter);
 
 // initilizing port
 let PORT = process.env.PORT

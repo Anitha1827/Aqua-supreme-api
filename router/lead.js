@@ -9,6 +9,7 @@ router.post("/addlead", async (req, res) => {
     await new Lead({
       name: req.body.name,
       phone: req.body.phone,
+      feedback:req.body.feedback,
     }).save();
     res.status(200).json({ message: "Lead added Successfully!" });
   } catch (error) {
@@ -20,13 +21,14 @@ router.post("/addlead", async (req, res) => {
 // Edit lead
 router.put("/editlead", async (req, res) => {
   try {
-    let { id, name, phone } = req.body;
+    let { id, name, phone,feedback } = req.body;
     await Lead.findByIdAndUpdate(
       { _id: id },
       {
         $set: {
           name,
           phone,
+          feedback,
         },
       }
     );

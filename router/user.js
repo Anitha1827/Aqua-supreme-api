@@ -8,6 +8,8 @@ router.post("/add-new-user", async (req, res) => {
       await new User({
         name: req.body.name,
         phone: req.body.phone,
+        email:req.body.email,
+        password:req.body.password,
       }).save();
   
       res.status(200).json({ message: "New User added successfully!" });
@@ -20,13 +22,15 @@ router.post("/add-new-user", async (req, res) => {
   // Edit user details
   router.put("/edit-user", async (req, res) => {
     try {
-        let {name,phone,id} = req.body;
+        let {name,phone,email,password,id} = req.body;
       await User.findOneAndUpdate(
         { _id: id },
         {
           $set: {
             name,
             phone,
+            email,
+            password,
           },
         }
       );

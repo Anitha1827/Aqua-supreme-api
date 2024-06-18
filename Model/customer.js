@@ -51,7 +51,8 @@ let customerSchema = new mongoose.Schema({
     },
     createdAt:{
         type:"string",
-    }
+    },
+    
 });
 
 let Customer = mongoose.model("Customer", customerSchema);

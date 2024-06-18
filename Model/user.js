@@ -10,6 +10,13 @@ let userSchema = new mongoose.Schema({
     required:true,
     unique:true,
   },
+  email:{
+    type:"string",
+    unique:true,
+  },
+  password:{
+    type:"string",
+  }
 });
 
 let User = mongoose.model("User", userSchema);

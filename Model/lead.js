@@ -7,6 +7,9 @@ let leadSchema = new mongoose.Schema({
     phone:{
         type:"string",
     },
+    feedback:{
+        type:"string",
+    },
 });
 
 let Lead = mongoose.model("Lead", leadSchema);
