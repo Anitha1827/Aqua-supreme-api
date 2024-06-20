@@ -2,6 +2,7 @@ import express from "express";
 import { Services } from "../Model/services.js";
 import { getCurrentDate, getdueDate } from "../service.js";
 import { Customer } from "../Model/customer.js";
+import { Spares } from "../Model/spares.js";
 
 let router = express.Router();
 
@@ -90,6 +91,7 @@ router.put("/service-status/:id", async (req, res) => {
     let remarks = req.body.remarks;
     let isPending = req.body.isPending;
     let isCompleted = req.body.isCompleted;
+    let spares = req.body.selectedSpares;
     let service = await Services.findById({ _id: id });
     let customer = await Customer.findById({ _id: service.customerId });
     let duedate = isCompleted ? getdueDate() : customer.duedate;
@@ -105,6 +107,7 @@ router.put("/service-status/:id", async (req, res) => {
           isPending,
           isCompleted,
           updatedAt,
+          spares,
         },
       }
     );
@@ -130,6 +133,7 @@ router.put("/service-status/:id", async (req, res) => {
 router.put("/service-completion/:id", async (req, res) => {
   try {
     let id = req.params.id;
+    let spare = req.body.selectedSpares;
     let duedate = getdueDate();
     let lastServicedAt =  getCurrentDate();
     await Services.findByIdAndUpdate(
@@ -139,6 +143,7 @@ router.put("/service-completion/:id", async (req, res) => {
           isCompleted: true,
           isPending: false,
           updatedAt:lastServicedAt,
+          spare,
         },
       }
     );

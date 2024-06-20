@@ -1,15 +1,20 @@
 import express from "express"
 import { User } from "../Model/user.js";
+import bcrypt from "bcrypt";
+import { generateJwtToken } from "../service.js";
 
 let router = express.Router();
 // Add new user to DB
 router.post("/add-new-user", async (req, res) => {
     try {
+      let salt = await bcrypt.genSalt(9);
+      let hashedpassword = await bcrypt.hash(req.body.password, salt);
+
       await new User({
         name: req.body.name,
         phone: req.body.phone,
         email:req.body.email,
-        password:req.body.password,
+        password:hashedpassword,
       }).save();
   
       res.status(200).json({ message: "New User added successfully!" });
@@ -51,7 +56,10 @@ router.post("/add-new-user", async (req, res) => {
   // Edit user details
   router.put("/edit-user", async (req, res) => {
     try {
-        let {name,phone,email,password,id} = req.body;
+      let salt = await bcrypt.genSalt(9);
+      let hashedpassword = await bcrypt.hash(req.body.password, salt);
+        let password = hashedpassword;
+        let {name,phone,email,id} = req.body;
       await User.findOneAndUpdate(
         { _id: id },
         {

@@ -38,6 +38,9 @@ let serviceSchema = new mongoose.Schema({
     },
     serviceType:{
         type:"string"
+    },
+    spare:{
+        type:"string",
     }
 });
 

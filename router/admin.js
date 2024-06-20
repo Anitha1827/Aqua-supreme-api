@@ -100,7 +100,7 @@ router.post("/find-user", async (req, res) => {
     let admin = await Admin.findById({ _id : id });
     let type = "serviceEngineer"
     if (admin) {
-      type = "admin"
+      type = admin.phone =="987654321" ? "Owner" : "admin";
     }
     res.status(200).json({ message: "User type got Successfully!", type });
   } catch (error) {
