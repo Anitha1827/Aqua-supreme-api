@@ -2,6 +2,7 @@ import express from "express";
 import bcrypt from "bcrypt";
 import { decodeJwtToken, generateJwtToken } from "../service.js";
 import { Admin } from "../Model/admin.js";
+import { User } from "../Model/user.js";
 
 let router = express.Router();
 
@@ -31,7 +32,7 @@ router.post("/signup", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-// Admin Login 
+// Admin Login
 router.post("/login", async (req, res) => {
   try {
     let user = await Admin.findOne({ phone: req.body.phone });
@@ -60,34 +61,36 @@ router.post("/login", async (req, res) => {
 });
 
 // Reset password
-router.put("/reset-password", async(req, res) => {
+router.put("/reset-password", async (req, res) => {
   try {
-   let newpassword = req.body.newPassword;
-   let oldpassword = req.body.oldPassword;
+    let newpassword = req.body.newPassword;
+    let oldpassword = req.body.oldPassword;
 
     let resp = await Admin.find();
     let admin = resp[0];
-    let valiedatePassword = await bcrypt.compare(
-      oldpassword,
-      admin.password
-    );
-    
+    let valiedatePassword = await bcrypt.compare(oldpassword, admin.password);
+
     console.log("valied", valiedatePassword);
-    if(!valiedatePassword){
-      return res.status(200).json({message:"Invalid Password"})
+    if (!valiedatePassword) {
+      return res.status(200).json({ message: "Invalid Password" });
     }
 
     // generate hash password
     let salt = await bcrypt.genSalt(9);
     let hashedpassword = await bcrypt.hash(newpassword, salt);
-    
-    await Admin.findOneAndUpdate({phone:admin.phone},{$set:{
-      password:hashedpassword
-    }});
-    res.status(200).json({message:"Password Reset Successfully!"})
+
+    await Admin.findOneAndUpdate(
+      { phone: admin.phone },
+      {
+        $set: {
+          password: hashedpassword,
+        },
+      }
+    );
+    res.status(200).json({ message: "Password Reset Successfully!" });
   } catch (error) {
-    console.error(error)
-    res.status(500).json({error:error.message})
+    console.error(error);
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -97,12 +100,24 @@ router.post("/find-user", async (req, res) => {
     let token = req.body.token;
     let id = decodeJwtToken(token);
 
-    let admin = await Admin.findById({ _id : id });
-    let type = "serviceEngineer"
+    let admin = await Admin.findById({ _id: id });
+    let type = "serviceEngineer";
+
     if (admin) {
-      type = admin.phone =="987654321" ? "Owner" : "admin";
+      type = admin.phone == "987654321" ? "Owner" : "admin";
+      return res
+        .status(200)
+        .json({ message: "User type got Successfully!", type });
     }
-    res.status(200).json({ message: "User type got Successfully!", type });
+    //finding service engineer
+    let user = await User.findById({ _id: id });
+    res
+      .status(200)
+      .json({
+        message: "User type got Successfully!",
+        type,
+        user: { name: user.name, phone: user.phone },
+      });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: error.message });
