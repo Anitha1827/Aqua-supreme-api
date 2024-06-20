@@ -6,6 +6,18 @@ let generateJwtToken = (id) => {
   return jwt.sign({ id }, process.env.SECRET_KEY);
 };
 
+//decode JWT token function
+
+const decodeJwtToken = (token) => {
+  try {
+    let decoded = jwt.verify(token, process.env.SECRET_KEY);
+    return decoded.id;
+  } catch (error) {
+    console.error("Error in Jwt Decoding", error);
+    return null;
+  }
+};
+
 // Get current date
 function getCurrentDate() {
   // Get current date
@@ -41,4 +53,4 @@ async function addnotification (data){
   }
 }
 
-export { generateJwtToken, getCurrentDate,getdueDate,addnotification };
+export { generateJwtToken, getCurrentDate,getdueDate,addnotification,decodeJwtToken };

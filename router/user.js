@@ -18,6 +18,35 @@ router.post("/add-new-user", async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   });
+
+  //service engineers login
+  router.post("/login", async (req, res) => {
+    try {
+      let user = await User.findOne({ phone: req.body.phone });
+  
+      if (!user) {
+        return res.status(400).json({ message: "Invalid Credentials" });
+      }
+  
+      // valiedate password
+      let valiedatePassword = await bcrypt.compare(
+        req.body.password,
+        user.password
+      );
+  
+      if (!valiedatePassword) {
+        return res.status(400).json({ message: "Incalied Password" });
+      }
+  
+      // generate jwtToken
+      let token = generateJwtToken(user._id);
+      res.status(200).json({ message: "Login Successfully!", token });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   
   // Edit user details
   router.put("/edit-user", async (req, res) => {

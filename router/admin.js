@@ -1,6 +1,6 @@
 import express from "express";
 import bcrypt from "bcrypt";
-import { generateJwtToken } from "../service.js";
+import { decodeJwtToken, generateJwtToken } from "../service.js";
 import { Admin } from "../Model/admin.js";
 
 let router = express.Router();
@@ -89,6 +89,24 @@ router.put("/reset-password", async(req, res) => {
     console.error(error)
     res.status(500).json({error:error.message})
   }
-})
+});
+
+//find user type (admin/service engineer)
+router.post("/find-user", async (req, res) => {
+  try {
+    let token = req.body.token;
+    let id = decodeJwtToken(token);
+
+    let admin = await Admin.findById({ _id : id });
+    let type = "serviceEngineer"
+    if (admin) {
+      type = "admin"
+    }
+    res.status(200).json({ message: "User type got Successfully!", type });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
+});
 
 export let authrouter = router;
