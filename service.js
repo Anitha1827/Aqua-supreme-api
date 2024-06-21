@@ -35,7 +35,7 @@ function getCurrentDate() {
   return date;
 }
 
-// Add months to current date
+// Add reminder months to current date
 function getdueDate({ month }) {
   let result = new Date();
   result.setMonth(result.getMonth() + Number(month));
