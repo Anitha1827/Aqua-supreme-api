@@ -35,22 +35,37 @@ function getCurrentDate() {
   return date;
 }
 
-// Add 3months to current date
-function getdueDate({month}){
-    let result = new Date();
-    result.setMonth(result.getMonth() + Number(month));
-    return result.toLocaleDateString();
-} 
+// Add months to current date
+function getdueDate({ month }) {
+  let result = new Date();
+  result.setMonth(result.getMonth() + Number(month));
+  let day = result.getDate();
+  let month = result.getMonth() + 1; //it will consider January as 0 so we increse + 1
+  let year = result.getFullYear();
+
+  day = day < 10 ? "0" + day : day;
+  month = month < 10 ? "0" + month : month;
+
+  // format the date as dd/mm/yyyy
+  let date = day + "/" + month + "/" + year;
+  return date;
+}
 
 // Notofication function
-async function addnotification (data){
+async function addnotification(data) {
   try {
     await new Notification(data).save();
-    return true
+    return true;
   } catch (error) {
     console.log(error);
-    return false
+    return false;
   }
 }
 
-export { generateJwtToken, getCurrentDate,getdueDate,addnotification,decodeJwtToken };
+export {
+  generateJwtToken,
+  getCurrentDate,
+  getdueDate,
+  addnotification,
+  decodeJwtToken,
+};
