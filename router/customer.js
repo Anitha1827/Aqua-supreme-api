@@ -129,7 +129,7 @@ router.put("/installation-status/:id", async (req, res) => {
 
     console.log("status",installationRemarks,isInstallationPending,isInstallationCompleted,id)
     let installation = await Customer.findById({_id:id});
-    let duedate = isInstallationCompleted ? getdueDate() : installation.duedate
+    let duedate = isInstallationCompleted ? getdueDate({month:installation.reminderMonth}) : installation.duedate
     let lastServicedAt = isInstallationCompleted ? getCurrentDate() : "";
     await Customer.findByIdAndUpdate(
       { _id: id },
@@ -189,11 +189,19 @@ router.put("/edit-duedate", async (req, res) => {
   try {
     let date = req.body.date;
     let id = req.body.id;
+    let isReassigned = req.body.isReassigned;
+    let customer = await Customer.findById({_id:id});
+    let  duedateReassignedCount = customer. duedateReassignedCount
+    if(isReassigned && isReassigned== true){
+      duedateReassignedCount = 0
+    }
+
     await Customer.findOneAndUpdate(
       { _id: id },
       {
         $set: {
           duedate:date,
+          duedateReassignedCount,
         },
       }
     );
@@ -219,12 +227,14 @@ router.get("/service-reminder", async (req, res) => {
 router.put("/installation-completion/:id", async (req, res) => {
   try {
     let id = req.params.id;
-    let duedate = getdueDate();
+    let customer  = await Customer.findById({_id:id});
+    let duedate = getdueDate({month:customer.reminderMonth});
     let lastServicedAt = getCurrentDate();
     await Customer.findByIdAndUpdate(
       { _id: id },
       { $set: { isInstallationCompleted: true, duedate, isinstalled:true,lastServicedAt} }
     );
+
     res
       .status(200)
       .json({ message: "Installation completion updated successfully!" });
@@ -242,10 +252,11 @@ router.put("/update", async (req, res) => {
     let address = req.body.address;
     let id = req.body.id;
     let duedate = req.body.duedate
+    let reminderMonth = req.body.reminderMonth
 
     await Customer.findOneAndUpdate(
       { _id: id },
-      { $set: { customerName, customerPhone, address,duedate } }
+      { $set: { customerName, customerPhone, address,duedate,reminderMonth } }
     );
     res.status(200).json({ message: "Customer Updated Succesfully!" });
   } catch (error) {

@@ -94,7 +94,7 @@ router.put("/service-status/:id", async (req, res) => {
     let spares = req.body.selectedSpares;
     let service = await Services.findById({ _id: id });
     let customer = await Customer.findById({ _id: service.customerId });
-    let duedate = isCompleted ? getdueDate() : customer.duedate;
+    let duedate = isCompleted ? getdueDate({month:customer.reminderMonth}) : customer.duedate;
     let lastServicedAt = isCompleted ? getCurrentDate() : customer.lastServicedAt ? customer.lastServicedAt: "";
     let serviceCount = isCompleted ? customer.serviceCount + 1 : customer.serviceCount 
     let updatedAt = getCurrentDate();
@@ -134,7 +134,6 @@ router.put("/service-completion/:id", async (req, res) => {
   try {
     let id = req.params.id;
     let spare = req.body.selectedSpares;
-    let duedate = getdueDate();
     let lastServicedAt =  getCurrentDate();
     await Services.findByIdAndUpdate(
       { _id: id },
@@ -149,6 +148,7 @@ router.put("/service-completion/:id", async (req, res) => {
     );
     let customer = Services.findById({ _id: id });
     let customerDetails = Customer.findById({_id:customer.customerId});
+    let duedate = getdueDate({month:customerDetails.reminderMonth});
     await Customer.findOneAndUpdate(
       { _id: customer.customerId },
       {

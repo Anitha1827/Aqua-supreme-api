@@ -36,9 +36,9 @@ function getCurrentDate() {
 }
 
 // Add 3months to current date
-function getdueDate(){
+function getdueDate({month}){
     let result = new Date();
-    result.setMonth(result.getMonth() + 3);
+    result.setMonth(result.getMonth() + Number(month));
     return result.toLocaleDateString();
 } 
 

@@ -6,7 +6,6 @@ import { authrouter } from "./router/admin.js";
 import { customerrouter } from "./router/customer.js";
 import { services } from "./router/services.js";
 import { userRouter } from "./router/user.js";
-import { getdueDate } from "./service.js";
 import { productrouter } from "./router/product.js";
 import { leadrouter } from "./router/lead.js";
 import { Sparesrouter } from "./router/spares.js";
@@ -15,7 +14,6 @@ import { Arearouter } from "./router/area.js";
 // Config dotenv
 dotenv.config();
 
-getdueDate();
 // middleware
 let app = express();
 app.use(express.json());
