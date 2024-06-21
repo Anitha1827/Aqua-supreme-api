@@ -52,7 +52,10 @@ let customerSchema = new mongoose.Schema({
     createdAt:{
         type:"string",
     },
-    
+    duedateReassignedCount:{
+        type:"number",
+        default:0,
+    },
 });
 
 let Customer = mongoose.model("Customer", customerSchema);

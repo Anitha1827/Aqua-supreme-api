@@ -2,7 +2,6 @@ import express from "express";
 import { Services } from "../Model/services.js";
 import { getCurrentDate, getdueDate } from "../service.js";
 import { Customer } from "../Model/customer.js";
-import { Spares } from "../Model/spares.js";
 
 let router = express.Router();
 
@@ -24,6 +23,7 @@ router.post("/create", async (req, res) => {
         $set: {
           isServicePending: true,
           duedate:req.body.duedate,
+          duedateReassignedCount:0,
         },
       }
     );
