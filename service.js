@@ -35,16 +35,16 @@ function getCurrentDate() {
   return date;
 }
 
-// Add reminder months to current date
+// Add months to current date
 function getdueDate({ month }) {
   let result = new Date();
   result.setMonth(result.getMonth() + Number(month));
   let day = result.getDate();
-  let month = result.getMonth() + 1; //it will consider January as 0 so we increse + 1
+  let months = result.getMonth() + 1; //it will consider January as 0 so we increse + 1
   let year = result.getFullYear();
 
   day = day < 10 ? "0" + day : day;
-  month = month < 10 ? "0" + month : month;
+  months = months < 10 ? "0" + months : months;
 
   // format the date as dd/mm/yyyy
   let date = day + "/" + month + "/" + year;

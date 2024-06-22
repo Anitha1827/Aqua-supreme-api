@@ -25,7 +25,7 @@ dbConnection();
 // Test API
 app.get("/", async(req, res) =>{
     res.send({
-        message:"Water tank service application running Successfully!",
+        message:"Aqua supreme CRM application running Successfully!",
     })
 })
 
