@@ -9,20 +9,21 @@ let router = express.Router();
 router.post("/create", async (req, res) => {
   try {
     let createdAt = getCurrentDate();
+    let duedate = dateFormat(req.body.duedate);
     await new Services({
       customerId: req.body.customerId,
       customerPhone: req.body.phone,
       customerName:req.body.customerName,
       serviceType: req.body.serviceType,
       createdAt: createdAt,
-      serviceDate: req.body.duedate,
+      serviceDate: duedate,
     }).save();
     await Customer.findByIdAndUpdate(
       { _id: req.body.customerId },
       {
         $set: {
           isServicePending: true,
-          duedate:req.body.duedate,
+          duedate:duedate,
           duedateReassignedCount:0,
         },
       }

@@ -18,15 +18,12 @@ const decodeJwtToken = (token) => {
   }
 };
 
-// Get current date
-function getCurrentDate() {
-  // Get current date
-  let currentDate = new Date();
-  // take day, month and year from the current date
-  let day = currentDate.getDate();
-  let month = currentDate.getMonth() + 1; //it will consider January as 0 so we increse + 1
-  let year = currentDate.getFullYear();
-
+// date format
+function dateFormat(val){
+  let formatDate = new Date(val);
+  let day = formatDate.getDate();
+  let month = formatDate.getMonth() + 1; //it will consider January as 0 so we increse + 1
+  let year = formatDate.getFullYear();
   day = day < 10 ? "0" + day : day;
   month = month < 10 ? "0" + month : month;
 
@@ -35,21 +32,22 @@ function getCurrentDate() {
   return date;
 }
 
+// Get current date
+function getCurrentDate() {
+  // Get current date
+  let currentDate = new Date();
+  let date = dateFormat(currentDate);
+  return date;
+}
+
 // Add months to current date
 function getdueDate({ month }) {
   let result = new Date();
   result.setMonth(result.getMonth() + Number(month));
-  let day = result.getDate();
-  let months = result.getMonth() + 1; //it will consider January as 0 so we increse + 1
-  let year = result.getFullYear();
-
-  day = day < 10 ? "0" + day : day;
-  months = months < 10 ? "0" + months : months;
-
-  // format the date as dd/mm/yyyy
-  let date = day + "/" + month + "/" + year;
+  let date = dateFormat(result);
   return date;
 }
+
 
 // Notofication function
 async function addnotification(data) {
