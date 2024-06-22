@@ -208,11 +208,13 @@ router.put("/edit-phone", async (req, res) => {
   try {
     let customerPhone = req.body.phone;
     let id = req.body.id;
+    let serviceDate = dateFormat(req.body.date);
     await Services.findOneAndUpdate(
       { _id: id },
       {
         $set: {
           customerPhone,
+          serviceDate
         },
       }
     );
