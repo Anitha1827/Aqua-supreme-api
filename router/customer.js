@@ -187,6 +187,7 @@ router.get("/installation-pending-data", async (req, res) => {
 //update duedate 
 router.put("/edit-duedate", async (req, res) => {
   try {
+    console.log("reassign", req.body)
     let date = dateFormat(req.body.date);
     let id = req.body.id;
     let isReassigned = req.body.isReassigned;
@@ -195,6 +196,7 @@ router.put("/edit-duedate", async (req, res) => {
     if(isReassigned && isReassigned== true){
       duedateReassignedCount = customer.duedateReassignedCount + 1
     }
+
     await Customer.findOneAndUpdate(
       { _id: id },
       {
