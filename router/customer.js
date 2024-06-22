@@ -193,7 +193,7 @@ router.put("/edit-duedate", async (req, res) => {
     let customer = await Customer.findById({_id:id});
     let  duedateReassignedCount = customer. duedateReassignedCount
     if(isReassigned && isReassigned== true){
-      duedateReassignedCount = 0
+      duedateReassignedCount = customer.duedateReassignedCount + 1
     }
     await Customer.findOneAndUpdate(
       { _id: id },
