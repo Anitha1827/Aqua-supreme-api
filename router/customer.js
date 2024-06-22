@@ -1,6 +1,6 @@
 import express from "express";
 import { Customer } from "../Model/customer.js";
-import { getCurrentDate, getdueDate } from "../service.js";
+import { dateFormat, getCurrentDate, getdueDate } from "../service.js";
 import { Services } from "../Model/services.js";
 
 let router = express.Router();
@@ -187,7 +187,7 @@ router.get("/installation-pending-data", async (req, res) => {
 //update duedate 
 router.put("/edit-duedate", async (req, res) => {
   try {
-    let date = req.body.date;
+    let date = dateFormat(req.body.date);
     let id = req.body.id;
     let isReassigned = req.body.isReassigned;
     let customer = await Customer.findById({_id:id});
@@ -195,7 +195,6 @@ router.put("/edit-duedate", async (req, res) => {
     if(isReassigned && isReassigned== true){
       duedateReassignedCount = 0
     }
-
     await Customer.findOneAndUpdate(
       { _id: id },
       {
