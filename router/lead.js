@@ -1,15 +1,19 @@
 import express from "express";
 import { Lead } from "../Model/lead.js";
+import { getCurrentDate } from "../service.js";
 
 let router = express.Router();
 
 // Add lead to DB
 router.post("/addlead", async (req, res) => {
   try {
+    let createdAt = getCurrentDate();
     await new Lead({
       name: req.body.name,
       phone: req.body.phone,
       feedback:req.body.feedback,
+      createdAt: createdAt,
+      handleBy:req.body.handleBy,
     }).save();
     res.status(200).json({ message: "Lead added Successfully!" });
   } catch (error) {
@@ -21,7 +25,7 @@ router.post("/addlead", async (req, res) => {
 // Edit lead
 router.put("/editlead", async (req, res) => {
   try {
-    let { id, name, phone,feedback } = req.body;
+    let { id, name, phone,feedback,handleBy } = req.body;
     await Lead.findByIdAndUpdate(
       { _id: id },
       {
@@ -29,6 +33,7 @@ router.put("/editlead", async (req, res) => {
           name,
           phone,
           feedback,
+          handleBy,
         },
       }
     );

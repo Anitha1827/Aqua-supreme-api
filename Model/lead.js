@@ -10,6 +10,12 @@ let leadSchema = new mongoose.Schema({
     feedback:{
         type:"string",
     },
+    createdAt:{
+        type:"string",
+    },
+    handleBy:{
+        type:"string",
+    }
 });
 
 let Lead = mongoose.model("Lead", leadSchema);
