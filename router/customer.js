@@ -272,11 +272,12 @@ router.put("/update-address", async (req, res) => {
     let id = req.body.id;
     //service id 
     let service = await Services.findById({_id:id})
-    let updateAddress = await Customer.findById({_id:service.customerId});
+    let customerId = req.body.installation === true ? id:service.customerId;
+    let updateAddress = await Customer.findById({_id:customerId});
     updateAddress.address["area"] = address.area;
     updateAddress.address["pin"] = address.pincode;
     await Customer.findOneAndUpdate(
-      { _id: service.customerId },
+      { _id: customerId },
       { $set: { address:updateAddress.address } }
     );
     res.status(200).json({ message: "Customer address Updated Succesfully!" });
