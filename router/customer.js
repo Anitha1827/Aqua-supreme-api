@@ -265,6 +265,25 @@ router.put("/update", async (req, res) => {
   }
 });
 
+//update address
+router.put("/update-address", async (req, res) => {
+  try {
+    let address = req.body.address;
+    let id = req.body.id;
+    let updateAddress = await Customer.findById({_id:id});
+    updateAddress.address["area"] = address.area;
+    updateAddress.address["pin"] = address.pincode;
+    await Customer.findOneAndUpdate(
+      { _id: id },
+      { $set: { address:updateAddress.address } }
+    );
+    res.status(200).json({ message: "Customer address Updated Succesfully!" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // update duedate to customer
 router.put("/update-duedate", async(req, res)=>{
   try {
