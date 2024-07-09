@@ -48,7 +48,7 @@ router.post("/login", async (req, res) => {
     );
 
     if (!valiedatePassword) {
-      return res.status(400).json({ message: "Incalied Password" });
+      return res.status(400).json({ message: "Invalied Password" });
     }
 
     // generate jwtToken
