@@ -9,6 +9,9 @@ let router = express.Router();
 router.post("/create", async (req, res) => {
   try {
     let createdAt = getCurrentDate();
+    let data = await Customer.findById({_id:req.body.id})
+    let installationCount = data.installationCount+1
+    let allProducts = [...data.allProducts, req.body.product]
     // Adding new Customer details to DB
     await Customer.findByIdAndUpdate(
       { _id: req.body.id },
@@ -20,6 +23,8 @@ router.post("/create", async (req, res) => {
           // createdAt: createdAt,
           // duedate:req.body.date,
           // custDetails: req.body.custDetails, // without info
+          installationCount,
+          allProducts,
           isInstallationCompleted: false,
           isServicePending: false,
           product: req.body.product,

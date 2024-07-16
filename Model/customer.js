@@ -51,6 +51,14 @@ let customerSchema = new mongoose.Schema({
     type: "boolean",
     default: false,
   },
+  installationCount:{
+    type:"number",
+    default:0
+  },
+  allProducts:{
+    type:"array",
+    default:[],
+  },
   createdAt: {
     type: "string",
   },
