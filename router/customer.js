@@ -10,7 +10,6 @@ router.post("/create", async (req, res) => {
   try {
     let createdAt = getCurrentDate();
     // Adding new Customer details to DB
-    console.log("id", req.body.id);
     await Customer.findByIdAndUpdate(
       { _id: req.body.id },
       {
