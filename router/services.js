@@ -229,7 +229,7 @@ router.put("/edit-phone", async (req, res) => {
 router.delete("/delete/:id", async (req, res) => {
   try {
     let id = req.params.id;
-    let service = Services.findById({_id:id});
+    let service = await Services.findById({_id:id});
     await Customer.findByIdAndUpdate({_id:service.customerId},{$set:{
       isServicePending:false
     }})

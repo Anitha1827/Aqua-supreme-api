@@ -44,7 +44,10 @@ router.post("/create", async (req, res) => {
 router.post("/createnew-customer", async (req, res) => {
   try {
     let createdAt = getCurrentDate();
-
+    let customer = await Customer.findOne({customerPhone:req.body.phone})
+    if(customer){
+      return res.status(202).json({message:"Number already exist!"})
+    }
     // Adding new Customer details to DB
     await new Customer({
       customerName: req.body.name,

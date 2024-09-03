@@ -9,7 +9,10 @@ router.post("/add-new-user", async (req, res) => {
     try {
       let salt = await bcrypt.genSalt(9);
       let hashedpassword = await bcrypt.hash(req.body.password, salt);
-
+      let user  = await User.findOne({phone:req.body.phone});
+      if(user){
+        res.status(202).json({message:"Number already exist!"})
+      }
       await new User({
         name: req.body.name,
         phone: req.body.phone,
