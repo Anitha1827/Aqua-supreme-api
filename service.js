@@ -46,8 +46,8 @@ function dateFormat(val) {
 function getCurrentDate() {
   // Get current date
   let currentDate = new Date();
-  // let date = dateFormat(currentDate.toISOString());
-  return currentDate;
+  let date = dateFormat(currentDate.toISOString());
+  return date;
 }
 
 // Add months to current date
@@ -78,9 +78,9 @@ function getWarrantyDate() {
   currentDate.setDate(currentDate.getDate() + 364);
 
   // Format the new date as dd/mm/yyyy
-  let warrantyDate = dateFormat(currentDate.toISOString());
+  // let warrantyDate = dateFormat(currentDate.toISOString());
   
-  return warrantyDate;
+  return currentDate;
 }
 
 export {
