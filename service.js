@@ -46,8 +46,8 @@ function dateFormat(val) {
 function getCurrentDate() {
   // Get current date
   let currentDate = new Date();
-  let date = dateFormat(currentDate.toISOString());
-  return date;
+  // let date = dateFormat(currentDate.toISOString());
+  return currentDate;
 }
 
 // Add months to current date
