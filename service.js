@@ -19,16 +19,26 @@ const decodeJwtToken = (token) => {
 };
 
 // date format
-function dateFormat(val){
-  let formatDate = new Date(val);
-  let day = formatDate.getDate();
-  let month = formatDate.getMonth() + 1; //it will consider January as 0 so we increse + 1
-  let year = formatDate.getFullYear();
-  day = day < 10 ? "0" + day : day;
-  month = month < 10 ? "0" + month : month;
+function dateFormat(val) {
+  // Create a date using Date.UTC to avoid timezone issues
+  const parts = val.split(/[T+:-]/); // Split the date string
+  const year = parts[0]; // YYYY
+  const month = parts[1] - 1; // MM (0-indexed)
+  const day = parts[2]; // DD
 
-  // format the date as dd/mm/yyyy
-  let date = day + "/" + month + "/" + year;
+  // Create the date with UTC to avoid local timezone issues
+  let formatDate = new Date(Date.UTC(year, month, day));
+  
+  day = formatDate.getUTCDate();
+  let monthFormatted = formatDate.getUTCMonth() + 1; // Month is 0-indexed
+  const yearFormatted = formatDate.getUTCFullYear();
+
+  // Format day and month
+  day = day < 10 ? "0" + day : day;
+  monthFormatted = monthFormatted < 10 ? "0" + monthFormatted : monthFormatted;
+
+  // Return the date in dd/mm/yyyy format
+  let date = day + "/" + monthFormatted + "/" + yearFormatted;
   return date;
 }
 
