@@ -78,9 +78,9 @@ function getWarrantyDate() {
   currentDate.setDate(currentDate.getDate() + 364);
 
   // Format the new date as dd/mm/yyyy
-  // let warrantyDate = dateFormat(currentDate.toISOString());
+  let warrantyDate = dateFormat(currentDate.toISOString());
   
-  return currentDate;
+  return warrantyDate;
 }
 
 export {
