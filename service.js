@@ -21,17 +21,17 @@ const decodeJwtToken = (token) => {
 // date format
 function dateFormat(val) {
   // Create a date using Date.UTC to avoid timezone issues
-  const parts = val.split(/[T+:-]/); // Split the date string
-  const year = parts[0]; // YYYY
-  const month = parts[1] - 1; // MM (0-indexed)
-  const day = parts[2]; // DD
+  let parts = val.split(/[T+:-]/); // Split the date string
+  let year = parts[0]; // YYYY
+  let month = parts[1] - 1; // MM (0-indexed)
+  let day = parts[2]; // DD
 
   // Create the date with UTC to avoid local timezone issues
   let formatDate = new Date(Date.UTC(year, month, day));
   
   day = formatDate.getUTCDate();
   let monthFormatted = formatDate.getUTCMonth() + 1; // Month is 0-indexed
-  const yearFormatted = formatDate.getUTCFullYear();
+  let yearFormatted = formatDate.getUTCFullYear();
 
   // Format day and month
   day = day < 10 ? "0" + day : day;
