@@ -149,13 +149,13 @@ router.put("/installation-status/:id", async (req, res) => {
     } = req.body;
     let id = req.params.id;
 
-    console.log(
-      "status",
-      installationRemarks,
-      isInstallationPending,
-      isInstallationCompleted,
-      id
-    );
+    // console.log(
+    //   "status",
+    //   installationRemarks,
+    //   isInstallationPending,
+    //   isInstallationCompleted,
+    //   id
+    // );
     let installation = await Customer.findById({ _id: id });
     let duedate = isInstallationCompleted
       ? getdueDate({ month: installation.reminderMonth })

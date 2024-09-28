@@ -70,6 +70,9 @@ let customerSchema = new mongoose.Schema({
     type: "string",
     default: "3",
   },
+  warranty:{
+    type:"string"
+  }
 });
 
 let Customer = mongoose.model("Customer", customerSchema);
