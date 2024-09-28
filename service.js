@@ -54,7 +54,7 @@ function getCurrentDate() {
 function getdueDate({ month }) {
   let result = new Date();
   result.setMonth(result.getMonth() + Number(month));
-  let date = dateFormat(result);
+  let date = dateFormat(result.toISOString());
   return date;
 }
 
