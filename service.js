@@ -46,7 +46,7 @@ function dateFormat(val) {
 function getCurrentDate() {
   // Get current date
   let currentDate = new Date();
-  let date = dateFormat(currentDate);
+  let date = dateFormat(currentDate.toISOString());
   return date;
 }
 
