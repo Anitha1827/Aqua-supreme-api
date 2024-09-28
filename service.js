@@ -70,6 +70,19 @@ async function addnotification(data) {
   }
 }
 
+function getWarrantyDate() {
+  // Get the current date
+  let currentDate = new Date();
+  
+  // Add 364 days to the current date
+  currentDate.setDate(currentDate.getDate() + 364);
+
+  // Format the new date as dd/mm/yyyy
+  let warrantyDate = dateFormat(currentDate.toISOString());
+  
+  return warrantyDate;
+}
+
 export {
   generateJwtToken,
   getCurrentDate,
@@ -77,4 +90,5 @@ export {
   addnotification,
   decodeJwtToken,
   dateFormat,
+  getWarrantyDate
 };

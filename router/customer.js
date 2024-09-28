@@ -1,6 +1,6 @@
 import express from "express";
 import { Customer } from "../Model/customer.js";
-import { dateFormat, getCurrentDate, getdueDate } from "../service.js";
+import { dateFormat, getCurrentDate, getdueDate, getWarrantyDate } from "../service.js";
 import { Services } from "../Model/services.js";
 
 let router = express.Router();
@@ -9,8 +9,8 @@ let router = express.Router();
 router.post("/create", async (req, res) => {
   try {
     let createdAt = getCurrentDate();
-    let data = await Customer.findById({_id:req.body.id})
-    let installationCount = data.installationCount+1
+    let data = await Customer.findById({ _id: req.body.id })
+    let installationCount = data.installationCount + 1
     let allProducts = [...data.allProducts, req.body.product]
     // Adding new Customer details to DB
     await Customer.findByIdAndUpdate(
@@ -44,9 +44,9 @@ router.post("/create", async (req, res) => {
 router.post("/createnew-customer", async (req, res) => {
   try {
     let createdAt = getCurrentDate();
-    let customer = await Customer.findOne({customerPhone:req.body.phone})
-    if(customer){
-      return res.status(202).json({message:"Number already exist!"})
+    let customer = await Customer.findOne({ customerPhone: req.body.phone })
+    if (customer) {
+      return res.status(202).json({ message: "Number already exist!" })
     }
     // Adding new Customer details to DB
     await new Customer({
@@ -161,6 +161,7 @@ router.put("/installation-status/:id", async (req, res) => {
       ? getdueDate({ month: installation.reminderMonth })
       : installation.duedate;
     let lastServicedAt = isInstallationCompleted ? getCurrentDate() : "";
+    let warranty = isInstallationCompleted ? getWarrantyDate() : ""
     await Customer.findByIdAndUpdate(
       { _id: id },
       {
@@ -171,6 +172,7 @@ router.put("/installation-status/:id", async (req, res) => {
           isinstalled: isInstallationCompleted,
           duedate,
           lastServicedAt,
+          warranty
         },
       }
     );
